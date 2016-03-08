@@ -61,7 +61,7 @@ gpio.write(1)
 | INTEL_EDISON_FAB_C    |
 | INTEL_DE3815          |
 | INTEL_MINNOWBOARD_MAX |
-| RASPBERRY_PI_B        |
+| RASPBERRY_PI          |
 | UNKNOWN_PLATFORM      |
 
 | mraa_intel_edison_miniboard_t |

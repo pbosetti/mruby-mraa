@@ -96,6 +96,7 @@ mrb_mraa_spi_transfer(mrb_state *mrb, mrb_value self){
     argc = mrb_get_args(mrb, "o|i", &mrv_txbuf, &length);
     result = MRAA_ERROR_INVALID_PARAMETER;
     if (mrb_array_p(mrv_txbuf)){
+        int i;
         if (argc == 1){
             length = RARRAY_LEN(mrv_txbuf);
         }
@@ -106,7 +107,7 @@ mrb_mraa_spi_transfer(mrb_state *mrb, mrb_value self){
         // Tx buffer
         txbuf = (uint8_t *)mrb_malloc(mrb, sizeof(uint8_t) * length);
         memset(txbuf, 0, sizeof(uint8_t) * length);
-        for (int i = 0; i < length; i++){
+        for (i = 0; i < length; i++){
             txbuf[i] = mrb_fixnum(mrb_ary_ref(mrb, mrv_txbuf, i));
         }
         result = mraa_spi_transfer_buf(spi, txbuf, rxbuf, length);
@@ -116,7 +117,7 @@ mrb_mraa_spi_transfer(mrb_state *mrb, mrb_value self){
             num_of_tran = length;
             mrv_rxbuf = mrb_ary_new_capa(mrb, num_of_tran);
             ai = mrb_gc_arena_save(mrb);
-            for (int i = 0; i < num_of_tran; i++){
+            for (i = 0; i < num_of_tran; i++){
                 mrb_ary_push(mrb, mrv_rxbuf, mrb_fixnum_value(rxbuf[i]));
                 mrb_gc_arena_restore(mrb, ai);
             }

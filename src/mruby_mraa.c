@@ -126,7 +126,7 @@ mrb_mruby_mraa_gem_init(mrb_state* mrb){
     mrb_define_const(mrb, class_mraa, "INTEL_EDISON_FAB_C", mrb_fixnum_value(MRAA_INTEL_EDISON_FAB_C));
     mrb_define_const(mrb, class_mraa, "INTEL_DE3815", mrb_fixnum_value(MRAA_INTEL_DE3815));
     mrb_define_const(mrb, class_mraa, "INTEL_MINNOWBOARD_MAX", mrb_fixnum_value(MRAA_INTEL_MINNOWBOARD_MAX));
-    mrb_define_const(mrb, class_mraa, "RASPBERRY_PI_B", mrb_fixnum_value(MRAA_RASPBERRY_PI_B));
+    mrb_define_const(mrb, class_mraa, "RASPBERRY_PI", mrb_fixnum_value(MRAA_RASPBERRY_PI));
     mrb_define_const(mrb, class_mraa, "UNKNOWN_PLATFORM", mrb_fixnum_value(MRAA_UNKNOWN_PLATFORM));
     // mraa_intel_edison_miniboard_t
     mrb_define_const(mrb, class_mraa, "INTEL_EDISON_MINIBOARD_J17_1", mrb_fixnum_value(MRAA_INTEL_EDISON_MINIBOARD_J17_1));

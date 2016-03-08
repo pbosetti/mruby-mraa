@@ -64,7 +64,7 @@ mrb_mraa_i2c_read(mrb_state *mrb, mrb_value self){
 
     uint8_t *rbuf;
     mrb_int num_of_read;
-    int ai;
+    int ai, i;
 
     mrb_value mrv_rbuf;
 
@@ -79,7 +79,7 @@ mrb_mraa_i2c_read(mrb_state *mrb, mrb_value self){
 
     mrv_rbuf = mrb_ary_new_capa(mrb, num_of_read);
     ai = mrb_gc_arena_save(mrb);
-    for (int i = 0; i < num_of_read; i++){
+    for (i = 0; i < num_of_read; i++){
         mrb_ary_push(mrb, mrv_rbuf, mrb_fixnum_value(rbuf[i]));
         mrb_gc_arena_restore(mrb, ai);
     }
@@ -141,20 +141,21 @@ mrb_mraa_i2c_write(mrb_state *mrb, mrb_value self){
     mraa_result_t result;
     uint8_t *wbuf;
     mrb_int argc;
-
+    
     Data_Get_Struct(mrb, self, &mrb_mraa_i2c_ctx_type, i2c);
 
     argc = mrb_get_args(mrb, "o|i", &mrv_wbuf, &length);
 
     result = MRAA_ERROR_INVALID_PARAMETER;
     if (mrb_array_p(mrv_wbuf)){
+        int i;
         if (argc == 1){
             length = RARRAY_LEN(mrv_wbuf);
         }
 
         wbuf = (uint8_t *)mrb_malloc(mrb, sizeof(uint8_t) * length);
         memset(wbuf, 0, sizeof(uint8_t) * length);
-        for (int i = 0; i < length; i++){
+        for (i = 0; i < length; i++){
             wbuf[i] = mrb_fixnum(mrb_ary_ref(mrb, mrv_wbuf, i));
         }
         result = mraa_i2c_write(i2c, wbuf, length);
