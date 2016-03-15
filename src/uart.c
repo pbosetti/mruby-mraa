@@ -3,6 +3,7 @@
 #include <mruby/data.h>
 #include <mruby/array.h>
 #include <mruby/variable.h>
+#include <mruby/string.h>
 #include <mraa.h>
 #include <errno.h>
 
@@ -10,6 +11,8 @@
 #define IV_SET(name, value)                                                    \
   mrb_iv_set(mrb, self, mrb_intern_cstr(mrb, (name)), value)
 #define UART_DEFAULT_BUFSIZE 1024
+#define UART_DEFAULT_TIMEOUT 1000
+#define UART_DEFAULT_PROMPT  ">"
 
 static void uart_close(mrb_state *mrb, void *p) {
   if (p != NULL) {
@@ -38,6 +41,8 @@ mrb_value mrb_mraa_uart_init(mrb_state *mrb, mrb_value self) {
   DATA_TYPE(self) = &mrb_mraa_uart_ctx_type;
   DATA_PTR(self) = uart;
   IV_SET("@read_bufsize", mrb_fixnum_value(UART_DEFAULT_BUFSIZE));
+  IV_SET("@timeout", mrb_fixnum_value(UART_DEFAULT_TIMEOUT));
+  IV_SET("@prompt", mrb_str_new_cstr(mrb, UART_DEFAULT_PROMPT));
   mrb_funcall(mrb, self, "baudrate=", 1, mrb_fixnum_value(baud));
   return self;
 }
@@ -165,4 +170,34 @@ mrb_value mrb_mraa_uart_flush(mrb_state *mrb, mrb_value self) {
     mrb_raise(mrb, E_RUNTIME_ERROR, "Could not flush port");
   }
   return self;
+}
+
+
+mrb_value mrb_mraa_uart_read_to_prompt(mrb_state *mrb, mrb_value self) {
+  mraa_uart_context uart;
+  mrb_int timeout, nargs, i;
+  char prompt, str_arg[1], buf[1];
+  mrb_value result;  
+  
+  timeout = mrb_fixnum(IV_GET("@timeout"));
+  
+  nargs = mrb_get_args(mrb, "|z", &str_arg);
+  if (nargs == 0) {
+    char *str = mrb_str_to_cstr(mrb, IV_GET("@prompt"));
+    prompt = str[0];
+  }
+  else
+    prompt = str_arg[0];
+  
+  Data_Get_Struct(mrb, self, &mrb_mraa_uart_ctx_type, uart);
+  result = mrb_str_buf_new(mrb, mrb_fixnum(IV_GET("@read_bufsize")));
+  
+  while (mraa_uart_data_available(uart, timeout) > 0) {
+    i = mraa_uart_read(uart, buf, 1);
+    if (i == 0)         break;
+    if (*buf == prompt) break;
+    result = mrb_str_cat_cstr(mrb, result, buf);
+  }
+
+  return result;
 }

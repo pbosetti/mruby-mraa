@@ -80,6 +80,8 @@ extern mrb_value mrb_mraa_uart_set_timeout(mrb_state *mrb, mrb_value self);
 extern mrb_value mrb_mraa_uart_read(mrb_state *mrb, mrb_value self);
 extern mrb_value mrb_mraa_uart_write(mrb_state *mrb, mrb_value self);
 extern mrb_value mrb_mraa_uart_data_available(mrb_state *mrb, mrb_value self);
+extern mrb_value mrb_mraa_uart_read_to_prompt(mrb_state *mrb, mrb_value self);
+
 
 void
 mrb_mruby_mraa_gem_init(mrb_state* mrb){
@@ -324,12 +326,13 @@ mrb_mruby_mraa_gem_init(mrb_state* mrb){
     mrb_define_method(mrb, class_mraa_uart, "initialize", mrb_mraa_uart_init, MRB_ARGS_REQ(1));
     mrb_define_method(mrb, class_mraa_uart, "flush", mrb_mraa_uart_flush, MRB_ARGS_NONE());
     mrb_define_method(mrb, class_mraa_uart, "baudrate=", mrb_mraa_uart_set_baudrate, MRB_ARGS_REQ(1));
-    mrb_define_method(mrb, class_mraa_uart, "set_timeouts", mrb_mraa_uart_set_timeout, MRB_ARGS_REQ(3));
+    mrb_define_method(mrb, class_mraa_uart, "set_hw_timeouts", mrb_mraa_uart_set_timeout, MRB_ARGS_REQ(3));
     mrb_define_method(mrb, class_mraa_uart, "dev_path", mrb_mraa_uart_get_dev_path, MRB_ARGS_NONE());
     mrb_define_method(mrb, class_mraa_uart, "close", mrb_mraa_uart_stop, MRB_ARGS_NONE());
     mrb_define_method(mrb, class_mraa_uart, "read", mrb_mraa_uart_read, MRB_ARGS_NONE());
     mrb_define_method(mrb, class_mraa_uart, "write", mrb_mraa_uart_write, MRB_ARGS_REQ(1));
     mrb_define_method(mrb, class_mraa_uart, "available?", mrb_mraa_uart_data_available, MRB_ARGS_OPT(1));
+    mrb_define_method(mrb, class_mraa_uart, "read_to_prompt", mrb_mraa_uart_read_to_prompt, MRB_ARGS_OPT(1));
 
     mraa_init();
 }

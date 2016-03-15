@@ -2,7 +2,7 @@ class Mraa
 
   class Uart
     attr_reader :baudrate, :read_to, :write_to, :interchar_to
-    attr_accessor :read_bufsize
+    attr_accessor :read_bufsize, :timeout, :prompt
   end
 
 end
