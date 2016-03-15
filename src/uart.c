@@ -20,7 +20,7 @@ static void uart_close(mrb_state *mrb, void *p) {
   }
 }
 
-static struct mrb_data_type mrb_mraa_uart_ctx_type = {"MraaSpiContext",
+static struct mrb_data_type mrb_mraa_uart_ctx_type = {"MraaUartContext",
                                                       uart_close};
 
 mrb_value mrb_mraa_uart_init(mrb_state *mrb, mrb_value self) {
