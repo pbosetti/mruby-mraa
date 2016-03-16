@@ -10,9 +10,10 @@
 #define IV_GET(name) mrb_iv_get(mrb, self, mrb_intern_cstr(mrb, (name)))
 #define IV_SET(name, value)                                                    \
   mrb_iv_set(mrb, self, mrb_intern_cstr(mrb, (name)), value)
-#define UART_DEFAULT_BUFSIZE 1024
-#define UART_DEFAULT_TIMEOUT 1000
-#define UART_DEFAULT_PROMPT  ">"
+#define UART_DEFAULT_BUFSIZE  1024
+#define UART_DEFAULT_TIMEOUT  1000
+#define UART_DEFAULT_BAUDRATE 9600
+#define UART_DEFAULT_PROMPT   ">"
 
 static void uart_close(mrb_state *mrb, void *p) {
   if (p != NULL) {
@@ -29,7 +30,7 @@ mrb_value mrb_mraa_uart_init(mrb_state *mrb, mrb_value self) {
 
   nargs = mrb_get_args(mrb, "i|i", &dev, &baud);
   if (nargs < 2)
-    baud = 9600;
+    baud = UART_DEFAULT_BAUDRATE;
 
   uart = mraa_uart_init(dev);
 
@@ -37,9 +38,10 @@ mrb_value mrb_mraa_uart_init(mrb_state *mrb, mrb_value self) {
     mrb_raisef(mrb, E_RUNTIME_ERROR, "Failed to initialize DEV:%S.",
                mrb_fixnum_value(dev));
   }
-
-  DATA_TYPE(self) = &mrb_mraa_uart_ctx_type;
-  DATA_PTR(self) = uart;
+  
+  mrb_data_init(self, uart, &mrb_mraa_uart_ctx_type);
+  // DATA_TYPE(self) = &mrb_mraa_uart_ctx_type;
+  // DATA_PTR(self) = uart;
   IV_SET("@read_bufsize", mrb_fixnum_value(UART_DEFAULT_BUFSIZE));
   IV_SET("@timeout", mrb_fixnum_value(UART_DEFAULT_TIMEOUT));
   IV_SET("@prompt", mrb_str_new_cstr(mrb, UART_DEFAULT_PROMPT));
@@ -53,7 +55,7 @@ mrb_value mrb_mraa_uart_set_baudrate(mrb_state *mrb, mrb_value self) {
   mrb_int baud;
   mrb_get_args(mrb, "i", &baud);
 
-  Data_Get_Struct(mrb, self, &mrb_mraa_uart_ctx_type, uart);
+  uart = (mraa_uart_context)mrb_data_get_ptr(mrb, self, &mrb_mraa_uart_ctx_type);
 
   result = mraa_uart_set_baudrate(uart, baud);
   if (result != MRAA_SUCCESS) {
@@ -69,7 +71,7 @@ mrb_value mrb_mraa_uart_set_timeout(mrb_state *mrb, mrb_value self) {
   mrb_int r, w, ic; // read, write, interchar
   mrb_get_args(mrb, "iii", &r, &w, &ic);
 
-  Data_Get_Struct(mrb, self, &mrb_mraa_uart_ctx_type, uart);
+  uart = (mraa_uart_context)mrb_data_get_ptr(mrb, self, &mrb_mraa_uart_ctx_type);
   result = mraa_uart_set_timeout(uart, r, w, ic);
   switch (result) {
   case MRAA_SUCCESS:
@@ -89,7 +91,7 @@ mrb_value mrb_mraa_uart_get_dev_path(mrb_state *mrb, mrb_value self) {
 
   const char *path;
 
-  Data_Get_Struct(mrb, self, &mrb_mraa_uart_ctx_type, uart);
+  uart = (mraa_uart_context)mrb_data_get_ptr(mrb, self, &mrb_mraa_uart_ctx_type);
 
   path = mraa_uart_get_dev_path(uart);
 
@@ -103,7 +105,7 @@ mrb_value mrb_mraa_uart_write(mrb_state *mrb, mrb_value self) {
   size_t l = 0;
   mrb_get_args(mrb, "s", &string, &l);
 
-  Data_Get_Struct(mrb, self, &mrb_mraa_uart_ctx_type, uart);
+  uart = (mraa_uart_context)mrb_data_get_ptr(mrb, self, &mrb_mraa_uart_ctx_type);
   result = mraa_uart_write(uart, string, l);
   if (result < 0) {
     mrb_raisef(mrb, E_RUNTIME_ERROR, "Could not write (err %S)",
@@ -124,7 +126,7 @@ mrb_value mrb_mraa_uart_read(mrb_state *mrb, mrb_value self) {
 
   string = calloc(bufsize, sizeof(char));
 
-  Data_Get_Struct(mrb, self, &mrb_mraa_uart_ctx_type, uart);
+  uart = (mraa_uart_context)mrb_data_get_ptr(mrb, self, &mrb_mraa_uart_ctx_type);
   result = mraa_uart_read(uart, string, bufsize);
   if (result < 0) {
     mrb_raisef(mrb, E_RUNTIME_ERROR, "Could not read (err %S)",
@@ -142,7 +144,7 @@ mrb_value mrb_mraa_uart_data_available(mrb_state *mrb, mrb_value self) {
   if (nargs == 0)
     millis = 0;
 
-  Data_Get_Struct(mrb, self, &mrb_mraa_uart_ctx_type, uart);
+  uart = (mraa_uart_context)mrb_data_get_ptr(mrb, self, &mrb_mraa_uart_ctx_type);
   return ( mraa_uart_data_available(uart, millis) == 1 ) ? mrb_true_value() : mrb_false_value();
 }
 
@@ -150,7 +152,7 @@ mrb_value mrb_mraa_uart_stop(mrb_state *mrb, mrb_value self) {
   mraa_uart_context uart;
   mraa_result_t result;
 
-  Data_Get_Struct(mrb, self, &mrb_mraa_uart_ctx_type, uart);
+  uart = (mraa_uart_context)mrb_data_get_ptr(mrb, self, &mrb_mraa_uart_ctx_type);
 
   result = mraa_uart_stop(uart);
   if (result != MRAA_SUCCESS) {
@@ -163,7 +165,7 @@ mrb_value mrb_mraa_uart_flush(mrb_state *mrb, mrb_value self) {
   mraa_uart_context uart;
   mraa_result_t result;
 
-  Data_Get_Struct(mrb, self, &mrb_mraa_uart_ctx_type, uart);
+  uart = (mraa_uart_context)mrb_data_get_ptr(mrb, self, &mrb_mraa_uart_ctx_type);
 
   result = mraa_uart_flush(uart);
   if (result != MRAA_SUCCESS) {
@@ -189,7 +191,7 @@ mrb_value mrb_mraa_uart_read_to_prompt(mrb_state *mrb, mrb_value self) {
   else
     prompt = str_arg[0];
   
-  Data_Get_Struct(mrb, self, &mrb_mraa_uart_ctx_type, uart);
+  uart = (mraa_uart_context)mrb_data_get_ptr(mrb, self, &mrb_mraa_uart_ctx_type);
   result = mrb_str_buf_new(mrb, mrb_fixnum(IV_GET("@read_bufsize")));
   
   while (mraa_uart_data_available(uart, timeout) > 0) {
