@@ -190,35 +190,35 @@ mrb_mraa_pwm_owner(mrb_state *mrb, mrb_value self){
     return mrb_fixnum_value(result);
 }
 
-mrb_value
-mrb_mraa_pwm_config_ms(mrb_state *mrb, mrb_value self){
-    mraa_pwm_context pwm;
-    mrb_int period;
-    mrb_float duty;
-
-    mraa_result_t result;
-
-    Data_Get_Struct(mrb, self, &mrb_mraa_pwm_ctx_type, pwm);
-
-    mrb_get_args(mrb, "if", &period, &duty);
-    result = mraa_pwm_config_ms(pwm, period, duty);
-
-    return mrb_fixnum_value(result);
-}
-
-mrb_value
-mrb_mraa_pwm_config_percent(mrb_state *mrb, mrb_value self){
-    mraa_pwm_context pwm;
-    mrb_int period;
-    mrb_float duty;
-
-    mraa_result_t result;
-
-    Data_Get_Struct(mrb, self, &mrb_mraa_pwm_ctx_type, pwm);
-
-    mrb_get_args(mrb, "if", &period, &duty);
-    result = mraa_pwm_config_percent(pwm, period, duty);
-
-    return mrb_fixnum_value(result);
-}
-
+// mrb_value
+// mrb_mraa_pwm_config_ms(mrb_state *mrb, mrb_value self){
+//     mraa_pwm_context pwm;
+//     mrb_int period;
+//     mrb_float duty;
+//
+//     mraa_result_t result;
+//
+//     Data_Get_Struct(mrb, self, &mrb_mraa_pwm_ctx_type, pwm);
+//
+//     mrb_get_args(mrb, "if", &period, &duty);
+//     result = mraa_pwm_config_ms(pwm, period, duty);
+//
+//     return mrb_fixnum_value(result);
+// }
+//
+// mrb_value
+// mrb_mraa_pwm_config_percent(mrb_state *mrb, mrb_value self){
+//     mraa_pwm_context pwm;
+//     mrb_int period;
+//     mrb_float duty;
+//
+//     mraa_result_t result;
+//
+//     Data_Get_Struct(mrb, self, &mrb_mraa_pwm_ctx_type, pwm);
+//
+//     mrb_get_args(mrb, "if", &period, &duty);
+//     result = mraa_pwm_config_percent(pwm, period, duty);
+//
+//     return mrb_fixnum_value(result);
+// }
+//

@@ -25,8 +25,8 @@ extern mrb_value mrb_mraa_pwm_pulsewidth_ms(mrb_state *mrb, mrb_value self);
 extern mrb_value mrb_mraa_pwm_pulsewidth_us(mrb_state *mrb, mrb_value self);
 extern mrb_value mrb_mraa_pwm_enable(mrb_state *mrb, mrb_value self);
 extern mrb_value mrb_mraa_pwm_owner(mrb_state *mrb, mrb_value self);
-extern mrb_value mrb_mraa_pwm_config_ms(mrb_state *mrb, mrb_value self);
-extern mrb_value mrb_mraa_pwm_config_percent(mrb_state *mrb, mrb_value self);
+// extern mrb_value mrb_mraa_pwm_config_ms(mrb_state *mrb, mrb_value self);
+// extern mrb_value mrb_mraa_pwm_config_percent(mrb_state *mrb, mrb_value self);
 
 // AIO
 extern mrb_value mrb_mraa_aio_init(mrb_state *mrb, mrb_value self);
@@ -127,8 +127,7 @@ mrb_mruby_mraa_gem_init(mrb_state* mrb){
     mrb_define_const(mrb, class_mraa, "ERROR_NO_DATA_AVAILABLE", mrb_fixnum_value(MRAA_ERROR_NO_DATA_AVAILABLE));
     mrb_define_const(mrb, class_mraa, "ERROR_INVALID_PLATFORM", mrb_fixnum_value(MRAA_ERROR_INVALID_PLATFORM));
     mrb_define_const(mrb, class_mraa, "ERROR_PLATFORM_NOT_INITIALISED", mrb_fixnum_value(MRAA_ERROR_PLATFORM_NOT_INITIALISED));
-    mrb_define_const(mrb, class_mraa, "ERROR_PLATFORM_ALREADY_INITIALISED", mrb_fixnum_value(MRAA_ERROR_PLATFORM_ALREADY_INITIALISED));
-    mrb_define_const(mrb, class_mraa, "ERROR_UNSPECIFIED", mrb_fixnum_value(MRAA_ERROR_UNSPECIFIED));
+    mrb_define_const(mrb, class_mraa, "ERROR_PLATFORM_ALREADY_INITIALISED", mrb_fixnum_value(MRAA_ERROR_UNSPECIFIED));
     // mraa_platform_t
     mrb_define_const(mrb, class_mraa, "INTEL_GALILEO_GEN1", mrb_fixnum_value(MRAA_INTEL_GALILEO_GEN1));
     mrb_define_const(mrb, class_mraa, "INTEL_GALILEO_GEN2", mrb_fixnum_value(MRAA_INTEL_GALILEO_GEN2));
@@ -235,8 +234,8 @@ mrb_mruby_mraa_gem_init(mrb_state* mrb){
     mrb_define_method(mrb, class_mraa_pwm, "pulsewidth_us", mrb_mraa_pwm_pulsewidth_us, MRB_ARGS_REQ(1));
     mrb_define_method(mrb, class_mraa_pwm, "enable", mrb_mraa_pwm_enable, MRB_ARGS_REQ(1));
     mrb_define_method(mrb, class_mraa_pwm, "owner", mrb_mraa_pwm_owner, MRB_ARGS_REQ(1));
-    mrb_define_method(mrb, class_mraa_pwm, "config_ms", mrb_mraa_pwm_config_ms, MRB_ARGS_REQ(2));
-    mrb_define_method(mrb, class_mraa_pwm, "config_percent", mrb_mraa_pwm_config_percent, MRB_ARGS_REQ(2));
+    // mrb_define_method(mrb, class_mraa_pwm, "config_ms", mrb_mraa_pwm_config_ms, MRB_ARGS_REQ(2));
+    // mrb_define_method(mrb, class_mraa_pwm, "config_percent", mrb_mraa_pwm_config_percent, MRB_ARGS_REQ(2));
 
     // AIO
     class_mraa_aio = mrb_define_class_under(mrb, class_mraa, "Aio", mrb->object_class);
